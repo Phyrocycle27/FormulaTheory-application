@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Formula Theory</string>
+    <string name="calculate">решить</string>
+    <string name="empty">Здесь пока ничего нет</string>
+    <string name="not_enough_data_to_solve">Увы, но этих значений не хватит для вычисления</string>
+    <string name="nothing_to_solve">Пустых полей нет, считать нечего</string>
+</resources>

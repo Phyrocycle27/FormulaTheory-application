@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="physics">Физика</string>
+    <string name="chemistry">Химия</string>
+    <string name="algebra">Алгебра</string>
+    <string name="geometry">Геометрия</string>
+</resources>

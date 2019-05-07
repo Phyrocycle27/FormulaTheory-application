@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pressOfBody">
+        <item>Давление тела на поверхность</item>
+        <item>P = F/S</item>
+        <item>F = P*S</item>
+        <item>S = F/P</item>
+    </string-array>
+    <string-array name="pressOfWater">
+        <item>Давление воды на определённой высоте</item>
+        <item>P = ρ*g*h</item>
+        <item>ρ = P/(g*h)</item>
+        <item>h = P/(g*ρ)</item>
+    </string-array>
+</resources>
