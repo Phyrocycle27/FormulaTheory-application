@@ -15,7 +15,7 @@ import tk.hiddenname.formulatheory.network.HttpClient;
 import tk.hiddenname.formulatheory.objects.Formula;
 import tk.hiddenname.formulatheory.objects.Section;
 import tk.hiddenname.formulatheory.objects.Subject;
-import tk.hiddenname.formulatheory.objects.UnitsTest;
+import tk.hiddenname.formulatheory.objects.Unit;
 
 public class DatabaseThread extends Thread {
 
@@ -154,12 +154,12 @@ public class DatabaseThread extends Thread {
    }
 
    //****************************** Получаем объекты единиц измерения из БД ***********************
-   public UnitsTest getUnitByLetter(String letter) {
+   public Unit getUnitByLetter(String letter) {
 	  cursor = db.query(DBConstants.UnitObjectEntity.TABLE_NAME, DBConstants.UnitObjectEntity.SELECTED_COLUMNS,
 			  DBConstants.UnitObjectEntity.COLUMN_LETTER + " = ?", new String[]{letter},
 			  null, null, null);
 	  if (cursor != null && cursor.moveToFirst()) {
-		 UnitsTest unitsTest = new UnitsTest();
+		 Unit unit = new Unit();
 		 int unitObjectId = 0;
 		 for (String column : cursor.getColumnNames()) {
 			switch (column) {
@@ -167,15 +167,15 @@ public class DatabaseThread extends Thread {
 				  unitObjectId = cursor.getInt(cursor.getColumnIndex(column));
 				  break;
 			   case DBConstants.UnitObjectEntity.COLUMN_HINT:
-				  unitsTest.setHint(cursor.getString(cursor.getColumnIndex(column)));
+				  unit.setHint(cursor.getString(cursor.getColumnIndex(column)));
 				  break;
 			   case DBConstants.UnitObjectEntity.COLUMN_LETTER:
-				  unitsTest.setLetter(cursor.getString(cursor.getColumnIndex(column)));
+				  unit.setLetter(cursor.getString(cursor.getColumnIndex(column)));
 			}
 		 }
-		 unitsTest.setMap(getUnits(unitObjectId));
+		 unit.setMap(getUnits(unitObjectId));
 		 cursor.close();
-		 return unitsTest;
+		 return unit;
 	  } else {
 		 Log.d("LogDB", "Cursor unit object is null");
 		 return null;

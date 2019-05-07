@@ -18,7 +18,7 @@ import tk.hiddenname.formulatheory.R;
 import tk.hiddenname.formulatheory.objects.Formula;
 import tk.hiddenname.formulatheory.objects.Section;
 import tk.hiddenname.formulatheory.objects.Subject;
-import tk.hiddenname.formulatheory.objects.UnitsTest;
+import tk.hiddenname.formulatheory.objects.Unit;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -100,17 +100,17 @@ public class DBHelper extends SQLiteOpenHelper {
 			subjectId++;
 		 }
 	  }
-	  List<UnitsTest> unitsTests = createDataUnitsTest();
+	  List<Unit> units = createDataUnitsTest();
 	  int unitObjectId = 0, unitId = 0;
-	  if (unitsTests.size() > 0) {
-		 for (UnitsTest unitsTest : unitsTests) {
+	  if (units.size() > 0) {
+		 for (Unit unit : units) {
 			cv.clear();
 			cv.put(DBConstants.UnitObjectEntity._ID, unitObjectId);
-			cv.put(DBConstants.UnitObjectEntity.COLUMN_HINT, unitsTest.getHint());
-			cv.put(DBConstants.UnitObjectEntity.COLUMN_LETTER, unitsTest.getLetter());
+			cv.put(DBConstants.UnitObjectEntity.COLUMN_HINT, unit.getHint());
+			cv.put(DBConstants.UnitObjectEntity.COLUMN_LETTER, unit.getLetter());
 			Log.d("LogDB", "единицы измерения (объект) " + cv.toString());
 			db.insert(DBConstants.UnitObjectEntity.TABLE_NAME, null, cv);
-			for (Map.Entry<String, Double> entry : unitsTest.getMap().entrySet()) {
+			for (Map.Entry<String, Double> entry : unit.getMap().entrySet()) {
 			   cv.clear();
 			   cv.put(DBConstants.UnitEntity._ID, unitId);
 			   cv.put(DBConstants.UnitEntity.COLUMN_UNIT_NAME, entry.getKey());
@@ -145,9 +145,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
    @NotNull
    @Contract(" -> new")
-   private List<UnitsTest> createDataUnitsTest() {
-	  return new ArrayList<UnitsTest>() {{
-		 add(new UnitsTest("P", "давление", new TreeMap<String, Double>() {{
+   private List<Unit> createDataUnitsTest() {
+	  return new ArrayList<Unit>() {{
+		 add(new Unit("P", "давление", new TreeMap<String, Double>() {{
 			put("Па", 1.0);
 			put("гПа", 100.0);
 			put("кПа", 1000.0);
@@ -155,14 +155,14 @@ public class DBHelper extends SQLiteOpenHelper {
 			put("мПа", 0.001);
 			put("мкПа", 0.000001);
 		 }}));
-		 add(new UnitsTest("F", "сила", new TreeMap<String, Double>() {{
+		 add(new Unit("F", "сила", new TreeMap<String, Double>() {{
 			put("Н", 1.0);
 			put("кН", 1000.0);
 			put("МН", 1000000.0);
 			put("мН", 0.001);
 			put("мкН", 0.000001);
 		 }}));
-		 add(new UnitsTest("S", "площадь", new TreeMap<String, Double>() {{
+		 add(new Unit("S", "площадь", new TreeMap<String, Double>() {{
 			put("км²", 1000000.0);
 			put("га", 10000.0);
 			put("а", 100.0);
@@ -171,18 +171,18 @@ public class DBHelper extends SQLiteOpenHelper {
 			put("мм²", 0.000001);
 			put("м²", 1.0);
 		 }}));
-		 add(new UnitsTest("h", "длина", new TreeMap<String, Double>() {{
+		 add(new Unit("h", "длина", new TreeMap<String, Double>() {{
 			put("м", 1.0);
 			put("см", 0.01);
 			put("дм", 0.1);
 			put("мм", 0.001);
 			put("км", 1000.0);
 		 }}));
-		 add(new UnitsTest("ρ", "плотность", new TreeMap<String, Double>() {{
+		 add(new Unit("ρ", "плотность", new TreeMap<String, Double>() {{
 			put("кг/м³", 1.0);
 			put("г/см³", 0.001);
 		 }}));
-		 add(new UnitsTest("g", "ускорение", new TreeMap<String, Double>() {{
+		 add(new Unit("g", "ускорение", new TreeMap<String, Double>() {{
 			put("м/c²", 1.0);
 		 }}));
 	  }};

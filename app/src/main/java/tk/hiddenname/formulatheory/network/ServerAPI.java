@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 import tk.hiddenname.formulatheory.objects.Formula;
 import tk.hiddenname.formulatheory.objects.Section;
 import tk.hiddenname.formulatheory.objects.Subject;
-import tk.hiddenname.formulatheory.objects.UnitsTest;
+import tk.hiddenname.formulatheory.objects.Unit;
 
 public interface ServerAPI {
 
@@ -45,8 +45,8 @@ public interface ServerAPI {
    //************* ЕДИНИЦЫ ИЗМЕРЕНИЯ ************
 
    @GET("unit/getUnits")
-   Call<List<UnitsTest>> getUnitObjecs();
+   Call<List<Unit>> getUnitObjecs();
 
    @GET("unit/getUnit")
-   Call<UnitsTest> getUnits(@Query("id") int unitId);
+   Call<Unit> getUnits(@Query("id") int unitId);
 }

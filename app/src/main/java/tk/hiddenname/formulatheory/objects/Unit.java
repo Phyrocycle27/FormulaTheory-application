@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
-public class UnitsTest {
+public class Unit {
    private String hint;
    private String letter;
    private Map<String, Double> map = new TreeMap<>();
@@ -21,10 +21,10 @@ public class UnitsTest {
 	  return sortedByValues;
    }
 
-   public UnitsTest() {
+   public Unit() {
    }
 
-   public UnitsTest(String letter, String hint, Map<String, Double> map) {
+   public Unit(String letter, String hint, Map<String, Double> map) {
       this.letter = letter;
       this.hint = hint;
 	  this.map = sortByValues(map);

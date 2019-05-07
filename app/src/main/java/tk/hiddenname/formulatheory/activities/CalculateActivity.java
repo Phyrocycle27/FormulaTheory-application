@@ -30,14 +30,14 @@ import es.dmoral.toasty.Toasty;
 import tk.hiddenname.formulatheory.R;
 import tk.hiddenname.formulatheory.activities.main.ListActivity;
 import tk.hiddenname.formulatheory.objects.Formula;
-import tk.hiddenname.formulatheory.objects.UnitsTest;
+import tk.hiddenname.formulatheory.objects.Unit;
 
 public class CalculateActivity extends AppCompatActivity {
 
    private Formula formula;
    private Map<String, Double> enteredValues = new HashMap<>(), selectedUnits = new HashMap<>();
    private List<View> addedViews = new ArrayList<>();
-   private ArrayList<UnitsTest> list = new ArrayList<>();
+   private ArrayList<Unit> list = new ArrayList<>();
 
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
