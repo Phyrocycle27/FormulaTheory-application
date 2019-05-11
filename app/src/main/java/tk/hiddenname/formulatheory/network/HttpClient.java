@@ -29,10 +29,6 @@ public class HttpClient {
 	  Log.d("HttpClient", message);
    }
 
-   private void addToDB(){
-
-   }
-
    // ************** ПРЕДМЕТЫ ******************
 
    public List<Subject> getSubjects() {

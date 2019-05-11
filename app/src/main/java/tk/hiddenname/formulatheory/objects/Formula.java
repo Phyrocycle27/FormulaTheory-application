@@ -142,8 +142,7 @@ public class Formula implements Parcelable {
 	  st.start();
 	  // Возвращаем ответ на выражение
 	  Log.d("Calculate", "Unknown component's unit is: " + units.get(unknownComponent));
-	  float answer = (float) (st.calculate() * units.get(unknownComponent));
-	  return answer;
+	  return (float) (st.calculate() * units.get(unknownComponent));
    }
 
    @NotNull
