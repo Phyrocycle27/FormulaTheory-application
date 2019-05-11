@@ -18,35 +18,29 @@ public interface ServerAPI {
    Call<List<Subject>> getSubjects();
 
    @GET("subject/getSubject")
-   Call<Subject> getSubject(@Query("id") int subjectId);
+   Call<Subject> getSubject(@Query("id") long subjectId);
 
    //************ РАЗДЕЛЫ ***************
 
    @GET("section/getSections")
-   Call<List<Section>> getSections(@Query("subjectId") int subjectId);
+   Call<List<Section>> getSections(@Query("subjectId") long subjectId);
 
    @GET("section/getSection")
-   Call<Section> getSection(@Query("id") int sectionId);
+   Call<Section> getSection(@Query("id") long sectionId);
 
    //************ ФОРМУЛЫ *************
 
-   @GET("formulaObject/getFormulasObjects")
-   Call<List<Formula>> getFormulasObjects(@Query("sectionId") int sectionId);
-
-   @GET("formulaObject/getFormulaObject")
-   Call<Formula> getFormulaObject(@Query("id") int formulaObjectId);
-
    @GET("formula/getFormulas")
-   Call<List<Formula>> getFormulas(@Query("formulaObjectId") int formulaObjectId);
+   Call<List<Formula>> getFormulas(@Query("sectionId") long sectionId);
 
    @GET("formula/getFormula")
-   Call<Formula> getFormula(@Query("id") int formulaId);
+   Call<Formula> getFormula(@Query("id") long formulaId);
 
    //************* ЕДИНИЦЫ ИЗМЕРЕНИЯ ************
 
    @GET("unit/getUnits")
-   Call<List<Unit>> getUnitObjecs();
+   Call<List<Unit>> getUnitObjects();
 
    @GET("unit/getUnit")
-   Call<Unit> getUnits(@Query("id") int unitId);
+   Call<Unit> getUnits(@Query("id") long unitId);
 }

@@ -1,33 +1,31 @@
 package tk.hiddenname.formulatheory.database;
 
-class DBConstants {
+public class DBConstants {
 
-   static class SubjectEntity {
-	  static final String TABLE_NAME = "subject";
-	  static final String COLUMN_NAME = "name";
-	  static final String COLUMN_COLOR = "color";
-	  static final String COLUMN_PHOTO_ID = "photo_id";
-	  static final String _ID = "_id";
-	  static final String COLUMN_NUM_OF_FORMULAS = "num_of_formulas";
+   public static class SubjectEntity {
+	  public static final String TABLE_NAME = "subject";
+	  public static final String COLUMN_NAME = "name";
+	  public static final String COLUMN_COLOR = "color";
+	  public static final String COLUMN_CODE = "code";
+	  public static final String _ID = "_id";
 	  static final String[] SELECTED_COLUMNS = new String[]{
-			  _ID, COLUMN_NAME, COLUMN_NUM_OF_FORMULAS, COLUMN_COLOR, COLUMN_PHOTO_ID
+			  _ID, COLUMN_NAME, COLUMN_COLOR, COLUMN_CODE
 	  };
 	  static final String CREATE_TABLE =
 			  "CREATE TABLE IF NOT EXISTS " +
 					  TABLE_NAME + "( " +
 					  _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 					  COLUMN_NAME + " TEXT NOT NULL, " +
-					  COLUMN_COLOR + " INTEGER NOT NULL, " +
-					  COLUMN_PHOTO_ID + " INTEGER NOT NULL, " +
-					  COLUMN_NUM_OF_FORMULAS + " INTEGER NOT NULL" + " )";
+					  COLUMN_CODE + " INTEGER NOT NULL, " +
+					  COLUMN_COLOR + " INTEGER NOT NULL " + " )";
    }
 
-   static class SectionEntity {
-	  static final String TABLE_NAME = "section";
-	  static final String COLUMN_NAME = "name";
-	  static final String _ID = "_id";
-	  static final String COLUMN_SUBJECT_ID = "subject_id";
-	  static final String COLUMN_NUM_OF_FORMULAS = "num_of_formulas";
+   public static class SectionEntity {
+	  public static final String TABLE_NAME = "section";
+	  public static final String COLUMN_NAME = "name";
+	  public static final String _ID = "_id";
+	  public static final String COLUMN_SUBJECT_ID = "subject_id";
+	  public static final String COLUMN_NUM_OF_FORMULAS = "num_of_formulas";
 	  static final String[] SELECTED_COLUMNS = new String[]{
 			  COLUMN_NAME, COLUMN_NUM_OF_FORMULAS, COLUMN_SUBJECT_ID, _ID
 	  };
@@ -43,11 +41,11 @@ class DBConstants {
 
    }
 
-   static class FormulaObjectEntity {
-	  static final String TABLE_NAME = "formula_object";
-	  static final String _ID = "_id";
-	  static final String COLUMN_DESCRIPTION = "description";
-	  static final String COLUMN_SECTION_ID = "section_id";
+   public static class FormulaObjectEntity {
+	  public static final String TABLE_NAME = "formula_object";
+	  public static final String _ID = "_id";
+	  public static final String COLUMN_DESCRIPTION = "description";
+	  public static final String COLUMN_SECTION_ID = "section_id";
 	  static final String[] SELECTED_COLUMNS = new String[]{
 			  _ID, COLUMN_DESCRIPTION, COLUMN_SECTION_ID
 	  };
@@ -61,11 +59,11 @@ class DBConstants {
 					  SectionEntity.TABLE_NAME + "(" + SectionEntity._ID + ") " + ")";
    }
 
-   static class FormulaEntity {
-	  static final String TABLE_NAME = "formula";
-	  static final String _ID = "_id";
-	  static final String COLUMN_FORMULA = "formula";
-	  static final String COLUMN_FORMULA_SUBSECTION_ID = "formula_subsection_id";
+   public static class FormulaEntity {
+	  public static final String TABLE_NAME = "formula";
+	  public static final String _ID = "_id";
+	  public static final String COLUMN_FORMULA = "formula";
+	  public static final String COLUMN_FORMULA_SUBSECTION_ID = "formula_subsection_id";
 	  static final String[] SELECTED_COLUMNS = new String[]{
 			  COLUMN_FORMULA, COLUMN_FORMULA_SUBSECTION_ID
 	  };

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import tk.hiddenname.formulatheory.network.HttpClient;
 import tk.hiddenname.formulatheory.objects.Formula;
 import tk.hiddenname.formulatheory.objects.Section;
 import tk.hiddenname.formulatheory.objects.Subject;
@@ -27,12 +26,10 @@ public class DatabaseThread extends Thread {
 	  db = dbHelper.getWritableDatabase();
    }
 
+   @Override
    public void run() {
+      super.run();
 	  Log.d("LogDB", "открываем БД для письма");
-	  HttpClient client = new HttpClient();
-	  client.getSubjects();
-	  client.getSections();
-	  client.getFormulas();
    }
 
 
@@ -54,11 +51,8 @@ public class DatabaseThread extends Thread {
 				  case DBConstants.SubjectEntity.COLUMN_COLOR:
 					 subject.setColor(cursor.getInt(cursor.getColumnIndex(column)));
 					 break;
-				  case DBConstants.SubjectEntity.COLUMN_NUM_OF_FORMULAS:
-					 subject.setNumOfFormulas(cursor.getInt(cursor.getColumnIndex(column)));
-					 break;
-				  case DBConstants.SubjectEntity.COLUMN_PHOTO_ID:
-					 subject.setDrawableId(cursor.getInt(cursor.getColumnIndex(column)));
+				  case DBConstants.SubjectEntity.COLUMN_CODE:
+				     subject.setCode(cursor.getInt(cursor.getColumnIndex(column)));
 			   }
 			}
 			subjects.add(subject);
@@ -173,8 +167,8 @@ public class DatabaseThread extends Thread {
 				  unit.setLetter(cursor.getString(cursor.getColumnIndex(column)));
 			}
 		 }
-		 unit.setMap(getUnits(unitObjectId));
 		 cursor.close();
+		 unit.setMap(getUnits(unitObjectId));
 		 return unit;
 	  } else {
 		 Log.d("LogDB", "Cursor unit object is null");

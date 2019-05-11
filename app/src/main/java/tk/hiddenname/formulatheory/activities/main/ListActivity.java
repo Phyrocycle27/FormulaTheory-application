@@ -2,6 +2,7 @@ package tk.hiddenname.formulatheory.activities.main;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,7 +32,7 @@ public class ListActivity extends AppCompatActivity {
 	  super.onCreate(savedInstanceState);
 	  setContentView(R.layout.activity_main);
 	  setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-	  dataThread = new DatabaseThread(getApplicationContext());
+	  dataThread = new DatabaseThread(this);
 	  dataThread.start();
 
 	  final Toolbar toolbar = findViewById(R.id.toolbar);

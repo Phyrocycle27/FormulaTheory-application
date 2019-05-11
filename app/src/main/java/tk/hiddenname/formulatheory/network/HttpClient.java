@@ -17,7 +17,7 @@ public class HttpClient {
 
    private ServerAPI serverAPI;
 
-   public HttpClient() {
+   public HttpClient () {
 	  serverAPI = new Retrofit.Builder()
 						  .baseUrl("https://formula-theory-server.herokuapp.com")
 						  .addConverterFactory(GsonConverterFactory.create())
@@ -29,137 +29,80 @@ public class HttpClient {
 	  Log.d("HttpClient", message);
    }
 
-   // ************** ПРЕДМЕТЫ ******************
+   private void addToDB(){
 
-   public void getSubjects() {
-	  Call<List<Subject>> subjects = serverAPI.getSubjects();
-
-	  try {
-		 Response<List<Subject>> response = subjects.execute();
-		 if (response.isSuccessful()) {
-			log("response body size is " + response.body().size());
-			log("response body is " + response.body().toString());
-		 } else {
-			log("response code " + response.code());
-		 }
-	  } catch (IOException e) {
-		 e.printStackTrace();
-	  }
    }
 
-   public void getSubject(int subjectId) {
-	  Call<Subject> subject = serverAPI.getSubject(subjectId);
+   // ************** ПРЕДМЕТЫ ******************
 
+   public List<Subject> getSubjects() {
+	  Call<List<Subject>> subjects = serverAPI.getSubjects();
 	  try {
-		 Response<Subject> response = subject.execute();
-		 if (response.isSuccessful()) {
-			log("response subject's name is " + response.body().getName());
-			log("response body is " + response.body().toString());
-		 } else {
-			log("response code " + response.code());
-		 }
+		 Response<List<Subject>> response = subjects.execute();
+		 if (response.isSuccessful()) return response.body();
+		 else log("response code " + response.code());
 	  } catch (IOException e) {
 		 e.printStackTrace();
 	  }
+	  return null;
+   }
+
+   public Subject getSubject(long subjectId) {
+	  try {
+		 Response<Subject> response = serverAPI.getSubject(subjectId).execute();
+		 if (response.isSuccessful()) return response.body();
+		 else log("response code " + response.code());
+	  } catch (IOException e) {
+		 e.printStackTrace();
+	  }
+	  return null;
    }
 
    //**************** РАЗДЕЛЫ *********************
 
-   public void getSections() {
-	  Call<List<Section>> sections = serverAPI.getSections();
-
+   public List<Section> getSections(long subjectId) {
 	  try {
-		 Response<List<Section>> response = sections.execute();
-		 if (response.isSuccessful()) {
-			log("response body size is " + response.body().size());
-			log("response body is " + response.body().toString());
-		 } else {
-			log("response code " + response.code());
-		 }
+		 Response<List<Section>> response = serverAPI.getSections(subjectId).execute();
+		 if (response.isSuccessful()) return response.body();
+		 else log("response code " + response.code());
 	  } catch (IOException e) {
 		 e.printStackTrace();
 	  }
+	  return null;
    }
 
-   public void getSection(int sectionId) {
-	  Call<Section> section = serverAPI.getSection(sectionId);
-
+   public Section getSection(long sectionId) {
 	  try {
-		 Response<Section> response = section.execute();
-		 if (response.isSuccessful()) {
-			log("response subject's name is " + response.body().getName());
-			log("response body is " + response.body().toString());
-		 } else {
-			log("response code " + response.code());
-		 }
+		 Response<Section> response = serverAPI.getSection(sectionId).execute();
+		 if (response.isSuccessful()) return response.body();
+		 else log("response code " + response.code());
 	  } catch (IOException e) {
 		 e.printStackTrace();
 	  }
-   }
-
-   public void getSectionsBySubjectId(int subjectId) {
-	  Call<List<Section>> sections = serverAPI.getSections(subjectId);
-
-	  try {
-		 Response<List<Section>> response = sections.execute();
-		 if (response.isSuccessful()) {
-			log("response subject's name is " + response.body().toString());
-			log("response body is " + response.body().toString());
-		 } else {
-			log("response code " + response.code());
-		 }
-	  } catch (IOException e) {
-		 e.printStackTrace();
-	  }
+	  return null;
    }
 
    // ********************** ФОРМУЛЫ ***********************
 
-   public void getFormulas() {
-	  Call<List<Formula>> formulas = serverAPI.getFormulas();
-
+   public Formula getFormula(long formulaId) {
 	  try {
-		 Response<List<Formula>> response = formulas.execute();
-		 if (response.isSuccessful()) {
-			log("response body size is " + response.body().size());
-			log("response body is " + response.body().toString());
-		 } else {
-			log("response code " + response.code());
-		 }
+		 Response<Formula> response = serverAPI.getFormula(formulaId).execute();
+		 if (response.isSuccessful()) return response.body();
+		 else log("response code " + response.code());
 	  } catch (IOException e) {
 		 e.printStackTrace();
 	  }
+	  return null;
    }
 
-   public void getFormula(int formulaId) {
-	  Call<Formula> formula = serverAPI.getFormula(formulaId);
-
+   public List<Formula> getFormulas(long sectionId) {
 	  try {
-		 Response<Formula> response = formula.execute();
-		 if (response.isSuccessful()) {
-			log("response formula name is " + response.body().getName());
-			log("response body is " + response.body().toString());
-		 } else {
-			log("response code " + response.code());
-		 }
+		 Response<List<Formula>> response = serverAPI.getFormulas(sectionId).execute();
+		 if (response.isSuccessful()) return response.body();
+		 else log("response code " + response.code());
 	  } catch (IOException e) {
 		 e.printStackTrace();
 	  }
-   }
-
-   public void getFormulasBySectionId(int sectionId) {
-	  Call<List<Formula>> formulas = serverAPI.getFormulas(sectionId);
-
-	  try {
-		 Response<List<Formula>> response = formulas.execute();
-		 if (response.isSuccessful()) {
-			log("response body size is " + response.body().size());
-			log("response body is " + response.body().toString());
-		 } else {
-			log("response code " + response.code());
-		 }
-	  } catch (IOException e) {
-		 e.printStackTrace();
-	  }
+	  return null;
    }
 }

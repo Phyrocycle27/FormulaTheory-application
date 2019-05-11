@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Subject {
    private long id;
    private String name;
-   private int numOfFormulas, drawableId, color;
+   private int color, code;
    //TEMP
    private ArrayList<Section> sections;
 
@@ -16,16 +16,20 @@ public class Subject {
    }
 
    //TEMP CONSTRUCTOR
-   public Subject(int nameId, int drawableId, int color, ArrayList<Section> sections, @NonNull Context context) {
+   public Subject(int nameId, int color, ArrayList<Section> sections, int code, @NonNull Context context) {
 	  this.color = color;
-	  this.drawableId = drawableId;
 	  this.sections = sections;
 	  name = context.getString(nameId);
-	  if(sections != null) {
-		 for (Section section : sections) numOfFormulas += section.getNumOfFormulas();
-	  } else numOfFormulas = 0;
    }
    //*********
+
+   public int getCode() {
+	  return code;
+   }
+
+   public void setCode(int code) {
+	  this.code = code;
+   }
 
    public void setId(long id) {
 	  this.id = id;
@@ -51,22 +55,6 @@ public class Subject {
 	  return color;
    }
 
-   public void setDrawableId(int drawableId) {
-	  this.drawableId = drawableId;
-   }
-
-   public int getDrawableId() {
-	  return drawableId;
-   }
-
-   public void setNumOfFormulas(int numOfFormulas) {
-	  this.numOfFormulas = numOfFormulas;
-   }
-
-   public int getNumOfFormulas() {
-	  return numOfFormulas;
-   }
-
    //TEMP METHODS
    public ArrayList<Section> getSections() {
 	  return sections;
@@ -77,9 +65,8 @@ public class Subject {
    public String toString() {
 	  return "Subject{" +
 					 "name = '" + name + '\'' +
-					 ", numOfFormulas = " + numOfFormulas +
-					 ", drawableId = " + drawableId +
 					 ", color = " + color +
+					 ", id = " + id +
 					 '}';
    }
 }

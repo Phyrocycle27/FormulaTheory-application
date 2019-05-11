@@ -14,10 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import tk.hiddenname.formulatheory.R;
-import tk.hiddenname.formulatheory.objects.Formula;
-import tk.hiddenname.formulatheory.objects.Section;
-import tk.hiddenname.formulatheory.objects.Subject;
 import tk.hiddenname.formulatheory.objects.Unit;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -41,12 +37,17 @@ public class DBHelper extends SQLiteOpenHelper {
 	  db.execSQL(DBConstants.FormulaEntity.CREATE_TABLE);
 	  db.execSQL(DBConstants.UnitObjectEntity.CREATE_TABLE);
 	  db.execSQL(DBConstants.UnitEntity.CREATE_TABLE);
+	  addIntoInternet(db);
 	  firstAddDataToDB(db);
    }
 
+   private void addIntoInternet(SQLiteDatabase db) {
+
+   }
+
    private void firstAddDataToDB(SQLiteDatabase db) {
-	  List<Subject> subjects = createDataSubject();
 	  ContentValues cv = new ContentValues();
+	  /*List<Subject> subjects = createDataSubject();
 	  int subjectId = 0, sectionId = 0, formulaSubSectionId = 0, formulaId = 0;
 	  Log.d("LogDB", "*************************** создаём данные ******************************");
 	  //***************** Добавление предметов в таблицу subject ***********************************
@@ -55,9 +56,8 @@ public class DBHelper extends SQLiteOpenHelper {
 			cv.clear();
 			cv.put(DBConstants.SubjectEntity.COLUMN_NAME, subject.getName());
 			cv.put(DBConstants.SubjectEntity._ID, subjectId);
-			cv.put(DBConstants.SubjectEntity.COLUMN_NUM_OF_FORMULAS, subject.getNumOfFormulas());
-			cv.put(DBConstants.SubjectEntity.COLUMN_PHOTO_ID, subject.getDrawableId());
 			cv.put(DBConstants.SubjectEntity.COLUMN_COLOR, subject.getColor());
+			cv.put(DBConstants.SubjectEntity.COLUMN_CODE, subject.getCode());
 			Log.d("LogDB", "Предмет " + cv.toString());
 			db.insert(DBConstants.SubjectEntity.TABLE_NAME, null, cv);
 			//******************** Добавление разделов предмета в таблицу section ******************
@@ -99,7 +99,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			}
 			subjectId++;
 		 }
-	  }
+	  }*/
 	  List<Unit> units = createDataUnitsTest();
 	  int unitObjectId = 0, unitId = 0;
 	  if (units.size() > 0) {
@@ -125,23 +125,23 @@ public class DBHelper extends SQLiteOpenHelper {
 	  }
    }
 
-   private List<Subject> createDataSubject() {
+   /*private List<Subject> createDataSubject() {
 	  Log.d("LogDB", "создаём данные");
-	  /* *********** СПИСОК ФОРМУЛ **************** */
+	  // *********** СПИСОК ФОРМУЛ ****************
 	  ArrayList<Formula> formulas = new ArrayList<>();
 	  formulas.add(new Formula(R.array.pressOfBody, context));
 	  formulas.add(new Formula(R.array.pressOfWater, context));
-	  /* ********** СПИСОК РАЗДЕЛОВ *************** */
+	  // ********** СПИСОК РАЗДЕЛОВ ***************
 	  ArrayList<Section> sections = new ArrayList<>();
 	  sections.add(new Section(R.string.hydrostatics, formulas, context));
-	  /* ********** СПИСОК ПРЕДМТОВ *************** */
+	  // ********** СПИСОК ПРЕДМТОВ ***************
 	  ArrayList<Subject> subjects = new ArrayList<>();
-	  subjects.add(new Subject(R.string.physics, R.drawable.physics, android.R.color.holo_blue_light, sections, context));
-	  subjects.add(new Subject(R.string.chemistry, R.drawable.chemistry, android.R.color.holo_red_light, null, context));
-	  subjects.add(new Subject(R.string.algebra, R.drawable.algebra, android.R.color.holo_orange_light, null, context));
-	  subjects.add(new Subject(R.string.geometry, R.drawable.geometry, android.R.color.holo_green_light, null, context));
+	  subjects.add(new Subject(R.string.physics, android.R.color.holo_blue_light, sections, 101, context));
+	  subjects.add(new Subject(R.string.chemistry, android.R.color.holo_red_light, null, 202, context));
+	  subjects.add(new Subject(R.string.algebra, android.R.color.holo_orange_light, null, 303, context));
+	  subjects.add(new Subject(R.string.geometry, android.R.color.holo_green_light, null, 404, context));
 	  return subjects;
-   }
+   } */
 
    @NotNull
    @Contract(" -> new")
