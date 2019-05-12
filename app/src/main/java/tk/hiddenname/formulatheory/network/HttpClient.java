@@ -5,7 +5,6 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
-import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -13,11 +12,11 @@ import tk.hiddenname.formulatheory.objects.Formula;
 import tk.hiddenname.formulatheory.objects.Section;
 import tk.hiddenname.formulatheory.objects.Subject;
 
-public class HttpClient {
+class HttpClient {
 
    private ServerAPI serverAPI;
 
-   public HttpClient () {
+   HttpClient() {
 	  serverAPI = new Retrofit.Builder()
 						  .baseUrl("https://formula-theory-server.herokuapp.com")
 						  .addConverterFactory(GsonConverterFactory.create())
@@ -29,12 +28,20 @@ public class HttpClient {
 	  Log.d("HttpClient", message);
    }
 
-   // ************** ПРЕДМЕТЫ ******************
-
-   public List<Subject> getSubjects() {
-	  Call<List<Subject>> subjects = serverAPI.getSubjects();
+   int ping() {
 	  try {
-		 Response<List<Subject>> response = subjects.execute();
+		 Response<List<Subject>> response = serverAPI.getSubjects().execute();
+		 if (response.isSuccessful()) return 0;
+		 else return response.code();
+	  } catch (IOException e) {
+		 e.printStackTrace();
+		 return -1;
+	  }
+   }
+
+   List<Subject> getSubjects() {
+	  try {
+		 Response<List<Subject>> response = serverAPI.getSubjects().execute();
 		 if (response.isSuccessful()) return response.body();
 		 else log("response code " + response.code());
 	  } catch (IOException e) {
@@ -43,7 +50,7 @@ public class HttpClient {
 	  return null;
    }
 
-   public Subject getSubject(long subjectId) {
+   Subject getSubject(long subjectId) {
 	  try {
 		 Response<Subject> response = serverAPI.getSubject(subjectId).execute();
 		 if (response.isSuccessful()) return response.body();
@@ -56,7 +63,7 @@ public class HttpClient {
 
    //**************** РАЗДЕЛЫ *********************
 
-   public List<Section> getSections(long subjectId) {
+   List<Section> getSections(long subjectId) {
 	  try {
 		 Response<List<Section>> response = serverAPI.getSections(subjectId).execute();
 		 if (response.isSuccessful()) return response.body();
@@ -67,7 +74,7 @@ public class HttpClient {
 	  return null;
    }
 
-   public Section getSection(long sectionId) {
+   Section getSection(long sectionId) {
 	  try {
 		 Response<Section> response = serverAPI.getSection(sectionId).execute();
 		 if (response.isSuccessful()) return response.body();
@@ -80,7 +87,7 @@ public class HttpClient {
 
    // ********************** ФОРМУЛЫ ***********************
 
-   public Formula getFormula(long formulaId) {
+   Formula getFormula(long formulaId) {
 	  try {
 		 Response<Formula> response = serverAPI.getFormula(formulaId).execute();
 		 if (response.isSuccessful()) return response.body();
@@ -91,7 +98,7 @@ public class HttpClient {
 	  return null;
    }
 
-   public List<Formula> getFormulas(long sectionId) {
+   List<Formula> getFormulas(long sectionId) {
 	  try {
 		 Response<List<Formula>> response = serverAPI.getFormulas(sectionId).execute();
 		 if (response.isSuccessful()) return response.body();

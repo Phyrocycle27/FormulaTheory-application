@@ -113,7 +113,7 @@ public class DatabaseThread extends Thread {
 					 formula.setId(cursor.getLong(cursor.getColumnIndex(column)));
 					 break;
 				  case DBConstants.FormulaObjectEntity.COLUMN_DESCRIPTION:
-					 formula.setName(cursor.getString(cursor.getColumnIndex(column)));
+					 formula.setDescription(cursor.getString(cursor.getColumnIndex(column)));
 			   }
 			}
 			formula.setFormulas(getFormulas(formula.getId()));

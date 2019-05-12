@@ -96,7 +96,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 	  Formula formula = (Formula) items.get(position);
 	  if (formula != null) {
 		 vh3.getLabel1().setText(formula.getFormula());
-		 vh3.getLabel2().setText(formula.getName());
+		 vh3.getLabel2().setText(formula.getDescription());
 	  }
    }
 }

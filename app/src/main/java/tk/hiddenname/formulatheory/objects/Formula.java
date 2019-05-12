@@ -46,11 +46,11 @@ public class Formula implements Parcelable {
 	  return id;
    }
 
-   public void setName(String description) {
+   public void setDescription(String description) {
 	  this.description = description;
    }
 
-   public String getName() {
+   public String getDescription() {
 	  return description;
    }
 
