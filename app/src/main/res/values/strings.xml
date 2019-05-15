@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Formula Theory</string>
     <string name="calculate">решить</string>
+    <string name="no_connection">Нет подключения к сети</string>
+    <string name="failed_connect_to_server">Ошибка при подключении к серверу</string>
+    <string name="loading">Загрузка данных…</string>
+    <string name="error_with_db">Ошибка при открытии БД</string>
+    <string name="connecting">Соединение с сервером</string>
+    <string name="success_loading">Данные успешно загружены</string>
     <string name="empty">Здесь пока ничего нет</string>
     <string name="not_enough_data_to_solve">Увы, но этих значений не хватит для вычисления</string>
     <string name="nothing_to_solve">Пустых полей нет, считать нечего</string>

@@ -1,6 +1,5 @@
 package tk.hiddenname.formulatheory.objects;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -16,7 +15,6 @@ import java.util.Map;
 
 public class Formula implements Parcelable {
    private String description;
-   private int numOfFormulas;
    private long id;
    private String[] formulas;
    //TEMP
@@ -25,17 +23,6 @@ public class Formula implements Parcelable {
    private static final String delimeters = "[=+\\-*(/)\\s]";
 
    public Formula() {
-   }
-
-   public Formula(int formulasArray, @NonNull Context context) {
-	  String[] tmpFormulasArr;
-	  tmpFormulasArr = context.getResources().getStringArray(formulasArray);
-	  numOfFormulas = tmpFormulasArr.length - 1;
-	  description = tmpFormulasArr[0];
-	  formulas = new String[numOfFormulas];
-	  System.arraycopy(tmpFormulasArr, 1, formulas, 0, numOfFormulas);
-	  formula = formulas[0];
-	  components = createComponets(formula);
    }
 
    public void setId(long id) {
@@ -89,10 +76,6 @@ public class Formula implements Parcelable {
 
    public String getComponentByIndex(int index) {
 	  return components[index];
-   }
-
-   int getNumOfFormulas() {
-	  return numOfFormulas;
    }
 
    public float solve(Map<String, Double> values, Map<String, Double> units) {
@@ -150,7 +133,6 @@ public class Formula implements Parcelable {
    public String toString() {
 	  return "Formula{" +
 					 "description = '" + description + '\'' +
-					 ", numOfFormulas = " + numOfFormulas +
 					 ", id = " + id +
 					 ", formulas = " + Arrays.toString(formulas) +
 					 ", formula = '" + formula + '\'' +
@@ -163,7 +145,6 @@ public class Formula implements Parcelable {
    private Formula(@NonNull Parcel in) {
 	  description = in.readString();
 	  formula = in.readString();
-	  numOfFormulas = in.readInt();
 	  formulas = in.createStringArray();
 	  components = in.createStringArray();
    }
@@ -193,7 +174,6 @@ public class Formula implements Parcelable {
    public void writeToParcel(Parcel dest, int flags) {
 	  dest.writeString(description);
 	  dest.writeString(formula);
-	  dest.writeInt(numOfFormulas);
 	  dest.writeStringArray(formulas);
 	  dest.writeStringArray(components);
    }

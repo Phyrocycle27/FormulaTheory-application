@@ -2,6 +2,7 @@ package tk.hiddenname.formulatheory.activities.main;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.Contract;
@@ -28,6 +30,7 @@ import java.util.Objects;
 
 import tk.hiddenname.formulatheory.R;
 import tk.hiddenname.formulatheory.activities.main.fragments.ParentFragment;
+import tk.hiddenname.formulatheory.network.NetworkUtil;
 import tk.hiddenname.formulatheory.network.UpdateDataService;
 import tk.hiddenname.formulatheory.objects.Subject;
 import tk.hiddenname.formulatheory.database.DatabaseThread;
@@ -35,17 +38,22 @@ import tk.hiddenname.formulatheory.database.DatabaseThread;
 public class ListActivity extends AppCompatActivity {
 
    private static DatabaseThread dataThread;
-   private UpdateBroadcastReceiver receiver;
+   private NetworkChangeReceiver networkChangeReceiver;
+   private DataReceiver dataReceiver;
+   private UpdateReceiver updateReceiver;
    private SharedPreferences mSettings;
+   private static Intent myService;
+   private static boolean serviceRun = false;
    private int shortAnimationDuration;
-   private Intent service;
    public static final String APP_PREFERENCES = "mySettings",
-		   APP_PREFERENCES_LOADED_DATA = "LoadedData";
+		   APP_PREFERENCES_LOADED_DATA = "LoadedDataFlag";
 
    private View contentView, loadingView;
    private Toolbar toolbar;
    private ViewPager viewPager;
    private TabLayout tabs;
+   @SuppressLint("StaticFieldLeak")
+   private static TextView status;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -57,31 +65,28 @@ public class ListActivity extends AppCompatActivity {
 
 	  mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
+	  status = findViewById(R.id.status);
 	  contentView = findViewById(R.id.main_content);
 	  loadingView = findViewById(R.id.loading_spinner);
 	  toolbar = findViewById(R.id.toolbar);
 	  viewPager = findViewById(R.id.viewpager);
 	  tabs = findViewById(R.id.tabs);
 
+	  loadingView.setVisibility(View.GONE);
+
 	  if (mSettings.contains(APP_PREFERENCES_LOADED_DATA)) {
 		 if (!mSettings.getBoolean(APP_PREFERENCES_LOADED_DATA, false)) startService();
 		 else {
-			loadingView.setVisibility(View.GONE);
-			contentView.setAlpha(0f);
-			contentView.setVisibility(View.VISIBLE);
-
-			contentView.animate()
-					.alpha(1f)
-					.setDuration(shortAnimationDuration)
-					.setListener(null);
+			contentViewIn();
 			initScreen();
 		 }
-	  } else startService();
-
+	  } else {
+		 startService();
+	  }
 	  //final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
    }
 
-   private void crossfade() {
+   private void contentViewIn() {
 	  contentView.setAlpha(0f);
 	  contentView.setVisibility(View.VISIBLE);
 
@@ -89,6 +94,10 @@ public class ListActivity extends AppCompatActivity {
 			  .alpha(1f)
 			  .setDuration(shortAnimationDuration)
 			  .setListener(null);
+   }
+
+   private void crossFade() {
+	  contentViewIn();
 
 	  loadingView.animate()
 			  .alpha(0f)
@@ -116,45 +125,79 @@ public class ListActivity extends AppCompatActivity {
 
    private void startService() {
 	  contentView.setVisibility(View.GONE);
-	  //Запускаем сервис для получения данных из интернета
-	  service = new Intent(ListActivity.this, UpdateDataService.class);
-	  startService(service);
-
-	  // регистрируем слушатель
-	  receiver = new UpdateBroadcastReceiver();
+	  loadingView.setVisibility(View.VISIBLE);
+	  // регистрируем ресиверы
+	  dataReceiver = new DataReceiver();
 	  IntentFilter intentFilter = new IntentFilter(UpdateDataService.ACTION);
 	  intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-	  registerReceiver(receiver, intentFilter);
+	  registerReceiver(dataReceiver, intentFilter);
+
+	  updateReceiver = new UpdateReceiver();
+	  IntentFilter updateIntentFilter = new IntentFilter(UpdateDataService.ACTION_UPDATE);
+	  updateIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+	  registerReceiver(updateReceiver, updateIntentFilter);
+
+	  networkChangeReceiver = new NetworkChangeReceiver();
+	  registerReceiver(networkChangeReceiver,
+			  new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
    }
 
    @Override
    protected void onDestroy() {
 	  super.onDestroy();
-	  if (receiver != null) unregisterReceiver(receiver);
+	  if (dataReceiver != null) unregisterReceiver(dataReceiver);
+	  if (updateReceiver != null) unregisterReceiver(updateReceiver);
+	  if (networkChangeReceiver != null) unregisterReceiver(networkChangeReceiver);
    }
 
-   public class UpdateBroadcastReceiver extends BroadcastReceiver {
+   public static class NetworkChangeReceiver extends BroadcastReceiver {
+
+	  @Override
+	  public void onReceive(final Context context, final Intent intent) {
+		 Log.d("UpdateDataService", "network receiver is working");
+		 if (!serviceRun)
+			if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
+			   Log.d("UpdateDataService", "сработал NetworkReceiver");
+			   // Проверяем соединение подключение к СЕТИ
+			   if (NetworkUtil.isNetworkConnected(context)) {
+				  Log.d("UpdateDataService", "есть подключение к сети");
+				  serviceRun = true;
+				  status.setText(R.string.connecting);
+				  myService = new Intent(context, UpdateDataService.class);
+				  context.startService(myService);
+			   } else Log.d("UpdateDataService", "нет подключения к сети");
+			}
+	  }
+   }
+
+   public class DataReceiver extends BroadcastReceiver {
 
 	  @Override
 	  public void onReceive(Context context, Intent intent) {
 		 boolean dbStatus = intent.getBooleanExtra(UpdateDataService.DATABASE_STATUS_KEY, false);
-		 boolean clientStatus = intent.getBooleanExtra(UpdateDataService.CLIENT_STATUS_KEY, false);
 		 SharedPreferences.Editor editor = mSettings.edit();
-		 if (dbStatus && clientStatus) {
-			//Toast.makeText(ListActivity.this, "Данные успешно загружены", Toast.LENGTH_SHORT).show();
+		 if (dbStatus) {
+			unregisterReceiver(networkChangeReceiver);
+			networkChangeReceiver = null;
 			editor.putBoolean(APP_PREFERENCES_LOADED_DATA, true);
-			crossfade();
+			crossFade();
 			initScreen();
-		 } else if (!dbStatus && clientStatus) {
-			Toast.makeText(ListActivity.this, "Ошибка при открытии БД", Toast.LENGTH_SHORT).show();
-			editor.putBoolean(APP_PREFERENCES_LOADED_DATA, false);
-		 } else if (dbStatus && !clientStatus) {
-			Toast.makeText(ListActivity.this, "Ошибка при подключении к серверу", Toast.LENGTH_SHORT).show();
+		 } else {
+			Toast.makeText(ListActivity.this, getString(R.string.error_with_db), Toast.LENGTH_SHORT).show();
 			editor.putBoolean(APP_PREFERENCES_LOADED_DATA, false);
 		 }
+		 context.stopService(myService);
+		 myService = null;
 		 editor.apply();
-		 stopService(service);
-		 service = null;
+	  }
+   }
+
+   public class UpdateReceiver extends BroadcastReceiver {
+
+	  @Override
+	  public void onReceive(Context context, Intent intent) {
+		 String message = intent.getStringExtra(UpdateDataService.MESSAGE_KEY);
+		 status.setText(message);
 	  }
    }
 

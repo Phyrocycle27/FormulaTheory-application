@@ -1,6 +1,5 @@
 package tk.hiddenname.formulatheory.objects;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -11,16 +10,6 @@ public class Section {
    private int numOfFormulas;
    //TEMP
    private ArrayList<Formula> formulas;
-
-   public Section(int nameId, ArrayList<Formula> formulas, @NonNull Context context) {
-	  name = context.getString(nameId);
-	  this.formulas = formulas;
-	  try {
-		 for (Formula formula : formulas) numOfFormulas += formula.getNumOfFormulas();
-	  } catch (NullPointerException e) {
-		 e.printStackTrace();
-	  }
-   }
 
    public Section() {
    }

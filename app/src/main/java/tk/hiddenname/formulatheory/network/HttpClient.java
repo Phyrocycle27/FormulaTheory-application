@@ -28,17 +28,6 @@ class HttpClient {
 	  Log.d("HttpClient", message);
    }
 
-   int ping() {
-	  try {
-		 Response<List<Subject>> response = serverAPI.getSubjects().execute();
-		 if (response.isSuccessful()) return 0;
-		 else return response.code();
-	  } catch (IOException e) {
-		 e.printStackTrace();
-		 return -1;
-	  }
-   }
-
    List<Subject> getSubjects() {
 	  try {
 		 Response<List<Subject>> response = serverAPI.getSubjects().execute();
