@@ -9,10 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.InetAddress;
 
-public class NetworkUtil extends Thread {
-
-   public NetworkUtil() {
-   }
+public class NetworkUtil{
 
    public static boolean isNetworkConnected(@NotNull Context context) {
 	  ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

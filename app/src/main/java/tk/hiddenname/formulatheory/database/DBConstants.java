@@ -77,11 +77,11 @@ public class DBConstants {
 					  FormulaObjectEntity.TABLE_NAME + "(" + FormulaObjectEntity._ID + ") " + ")";
    }
 
-   static class UnitObjectEntity {
-	  static final String TABLE_NAME = "unit_object";
-	  static final String _ID = "_id";
-	  static final String COLUMN_LETTER = "letter";
-	  static final String COLUMN_HINT = "hint";
+   public static class UnitObjectEntity {
+	  public static final String TABLE_NAME = "unit_object";
+	  public static final String _ID = "_id";
+	  public static final String COLUMN_LETTER = "letter";
+	  public static final String COLUMN_HINT = "hint";
 	  static final String[] SELECTED_COLUMNS = new String[]{
 			  _ID, COLUMN_HINT, COLUMN_LETTER
 	  };
@@ -93,12 +93,12 @@ public class DBConstants {
 					  COLUMN_HINT + " TEXT NOT NULL" + " )";
    }
 
-   static class UnitEntity {
-	  static final String TABLE_NAME = "unit";
-	  static final String _ID = "_id";
-	  static final String COLUMN_UNIT_NAME = "unit_name";
-	  static final String COLUMN_UNIT_COEFF = "unit_coeff";
-	  static final String COLUMN_UNIT_OBJECT_ID = "unit_object_id";
+   public static class UnitEntity {
+	  public static final String TABLE_NAME = "unit";
+	  public static final String _ID = "_id";
+	  public static final String COLUMN_UNIT_NAME = "name";
+	  public static final String COLUMN_UNIT_COEFF = "coeff";
+	  public static final String COLUMN_UNIT_OBJECT_ID = "unit_object_id";
 	  static final String[] SELECTED_COLUMNS = new String[]{
 	  		COLUMN_UNIT_COEFF, COLUMN_UNIT_NAME, COLUMN_UNIT_OBJECT_ID
 	  };

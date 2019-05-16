@@ -9,12 +9,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.List;
+import java.util.Map;
 
 import tk.hiddenname.formulatheory.database.DBConstants;
 import tk.hiddenname.formulatheory.database.DBHelper;
 import tk.hiddenname.formulatheory.objects.Formula;
 import tk.hiddenname.formulatheory.objects.Section;
 import tk.hiddenname.formulatheory.objects.Subject;
+import tk.hiddenname.formulatheory.objects.Unit;
 
 public class UpdateDataService extends IntentService {
 
@@ -91,6 +93,27 @@ public class UpdateDataService extends IntentService {
 					 cv.put(DBConstants.SectionEntity.COLUMN_NUM_OF_FORMULAS, numOfFormulas);
 					 db.insert(DBConstants.SectionEntity.TABLE_NAME, null, cv);
 				  }
+			}
+		 }
+		 // Единицы измерения
+		 List<Unit> units = new JsonParser().getUnits(httpClient.getUnitsJSON());
+		 if(units != null) {
+		    int unitId = 0;
+		    for (Unit unit: units) {
+		       cv.clear();
+		       cv.put(DBConstants.UnitObjectEntity._ID, unit.getId());
+		       cv.put(DBConstants.UnitObjectEntity.COLUMN_LETTER, unit.getLetter());
+		       cv.put(DBConstants.UnitObjectEntity.COLUMN_HINT, unit.getHint());
+		       db.insert(DBConstants.UnitObjectEntity.TABLE_NAME, null, cv);
+		       for (Map.Entry entry: unit.getMap().entrySet()) {
+		          cv.clear();
+		          cv.put(DBConstants.UnitEntity._ID, unitId);
+		          cv.put(DBConstants.UnitEntity.COLUMN_UNIT_NAME, entry.getKey().toString());
+		          cv.put(DBConstants.UnitEntity.COLUMN_UNIT_COEFF, (Double) entry.getValue());
+		          cv.put(DBConstants.UnitEntity.COLUMN_UNIT_OBJECT_ID, unit.getId());
+		          db.insert(DBConstants.UnitEntity.TABLE_NAME, null, cv);
+		          unitId++;
+			   }
 			}
 		 }
 	  } else dbStatus = false;

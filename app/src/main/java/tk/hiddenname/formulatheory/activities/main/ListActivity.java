@@ -145,6 +145,8 @@ public class ListActivity extends AppCompatActivity {
    @Override
    protected void onDestroy() {
 	  super.onDestroy();
+	  stopService(myService);
+	  myService = null;
 	  if (dataReceiver != null) unregisterReceiver(dataReceiver);
 	  if (updateReceiver != null) unregisterReceiver(updateReceiver);
 	  if (networkChangeReceiver != null) unregisterReceiver(networkChangeReceiver);

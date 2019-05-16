@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 public class Unit {
+   private Integer id;
    private String hint;
    private String letter;
    private Map<String, Double> map = new TreeMap<>();
@@ -19,6 +20,14 @@ public class Unit {
 	  Map<K, V> sortedByValues = new TreeMap<>(valueComparator);
 	  sortedByValues.putAll(map);
 	  return sortedByValues;
+   }
+
+   public Integer getId() {
+	  return id;
+   }
+
+   public void setId(Integer id) {
+	  this.id = id;
    }
 
    public Unit() {

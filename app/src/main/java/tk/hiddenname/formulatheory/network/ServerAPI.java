@@ -2,13 +2,14 @@ package tk.hiddenname.formulatheory.network;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import tk.hiddenname.formulatheory.objects.Formula;
 import tk.hiddenname.formulatheory.objects.Section;
 import tk.hiddenname.formulatheory.objects.Subject;
-import tk.hiddenname.formulatheory.objects.Unit;
 
 public interface ServerAPI {
 
@@ -38,9 +39,9 @@ public interface ServerAPI {
 
    //************* ЕДИНИЦЫ ИЗМЕРЕНИЯ ************
 
-   @GET("unit/getUnits")
-   Call<List<Unit>> getUnitObjects();
+   @GET("unitObject/getUnitsObjects")
+   Call<ResponseBody> getUnitsObjects();
 
-   @GET("unit/getUnit")
-   Call<Unit> getUnits(@Query("id") long unitId);
+   @GET("unitObject/getUnitObject")
+   Call<ResponseBody> getUnitObject(@Query("id") long unitId);
 }

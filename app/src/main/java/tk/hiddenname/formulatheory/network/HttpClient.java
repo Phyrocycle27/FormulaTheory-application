@@ -5,12 +5,14 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import tk.hiddenname.formulatheory.objects.Formula;
 import tk.hiddenname.formulatheory.objects.Section;
 import tk.hiddenname.formulatheory.objects.Subject;
+import tk.hiddenname.formulatheory.objects.Unit;
 
 class HttpClient {
 
@@ -91,6 +93,17 @@ class HttpClient {
 	  try {
 		 Response<List<Formula>> response = serverAPI.getFormulas(sectionId).execute();
 		 if (response.isSuccessful()) return response.body();
+		 else log("response code " + response.code());
+	  } catch (IOException e) {
+		 e.printStackTrace();
+	  }
+	  return null;
+   }
+
+   String getUnitsJSON() {
+	  try {
+		 Response<ResponseBody> response = serverAPI.getUnitsObjects().execute();
+		 if (response.isSuccessful()) return response.body().string();
 		 else log("response code " + response.code());
 	  } catch (IOException e) {
 		 e.printStackTrace();
