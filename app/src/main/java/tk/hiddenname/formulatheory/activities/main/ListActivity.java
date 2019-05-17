@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,10 +21,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +46,7 @@ public class ListActivity extends AppCompatActivity {
    private DataReceiver dataReceiver;
    private UpdateReceiver updateReceiver;
    private SharedPreferences mSettings;
+   private List<Bitmap> bitmaps;
    private static Intent myService;
    private static boolean serviceRun = false;
    private int shortAnimationDuration;
@@ -50,6 +55,7 @@ public class ListActivity extends AppCompatActivity {
 
    private View contentView, loadingView;
    private Toolbar toolbar;
+   private ImageView image;
    private ViewPager viewPager;
    private TabLayout tabs;
    @SuppressLint("StaticFieldLeak")
@@ -63,8 +69,11 @@ public class ListActivity extends AppCompatActivity {
 
 	  shortAnimationDuration = getResources().getInteger(android.R.integer.config_longAnimTime);
 
+	  bitmaps = new ArrayList<>();
+	  createImageArr();
 	  mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
+	  image = findViewById(R.id.backdrop);
 	  status = findViewById(R.id.status);
 	  contentView = findViewById(R.id.main_content);
 	  loadingView = findViewById(R.id.loading_spinner);
@@ -77,7 +86,7 @@ public class ListActivity extends AppCompatActivity {
 	  if (mSettings.contains(APP_PREFERENCES_LOADED_DATA)) {
 		 if (!mSettings.getBoolean(APP_PREFERENCES_LOADED_DATA, false)) startService();
 		 else {
-			contentViewIn();
+			fadeViewIn(contentView);
 			initScreen();
 		 }
 	  } else {
@@ -86,28 +95,38 @@ public class ListActivity extends AppCompatActivity {
 	  //final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
    }
 
-   private void contentViewIn() {
-	  contentView.setAlpha(0f);
-	  contentView.setVisibility(View.VISIBLE);
+   private void createImageArr() {
+	  bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.physics));
+	  bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.chemistry));
+	  bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.algebra));
+	  bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.geometry));
+   }
 
-	  contentView.animate()
+   private void fadeViewIn(@NotNull View view) {
+	  view.setAlpha(0f);
+	  view.setVisibility(View.VISIBLE);
+
+	  view.animate()
 			  .alpha(1f)
 			  .setDuration(shortAnimationDuration)
 			  .setListener(null);
    }
 
-   private void crossFade() {
-	  contentViewIn();
-
-	  loadingView.animate()
+   private void fadeViewOut(@NotNull final View view) {
+	  view.animate()
 			  .alpha(0f)
 			  .setDuration(shortAnimationDuration)
 			  .setListener(new AnimatorListenerAdapter() {
 				 @Override
 				 public void onAnimationEnd(Animator animation) {
-					loadingView.setVisibility(View.GONE);
+					super.onAnimationEnd(animation);
+					view.setVisibility(View.GONE);
 				 }
 			  });
+   }
+
+   private void crossFade() {
+
    }
 
    private void initScreen() {
@@ -121,6 +140,30 @@ public class ListActivity extends AppCompatActivity {
 
 	  if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.app_name);
 	  Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+	  setImage(tabs.getSelectedTabPosition());
+
+	  tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+		 @Override
+		 public void onTabSelected(TabLayout.Tab tab) {
+			setImage(tab.getPosition());
+			fadeViewIn(image);
+		 }
+
+		 @Override
+		 public void onTabUnselected(TabLayout.Tab tab) {
+			fadeViewOut(image);
+		 }
+
+		 @Override
+		 public void onTabReselected(TabLayout.Tab tab) {
+		 }
+	  });
+
+   }
+
+   private void setImage(int position) {
+	  image.setImageBitmap(bitmaps.get(position));
    }
 
    private void startService() {
@@ -145,8 +188,10 @@ public class ListActivity extends AppCompatActivity {
    @Override
    protected void onDestroy() {
 	  super.onDestroy();
-	  stopService(myService);
-	  myService = null;
+	  if (myService != null) {
+		 stopService(myService);
+		 myService = null;
+	  }
 	  if (dataReceiver != null) unregisterReceiver(dataReceiver);
 	  if (updateReceiver != null) unregisterReceiver(updateReceiver);
 	  if (networkChangeReceiver != null) unregisterReceiver(networkChangeReceiver);
@@ -156,18 +201,15 @@ public class ListActivity extends AppCompatActivity {
 
 	  @Override
 	  public void onReceive(final Context context, final Intent intent) {
-		 Log.d("UpdateDataService", "network receiver is working");
 		 if (!serviceRun)
 			if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
-			   Log.d("UpdateDataService", "сработал NetworkReceiver");
 			   // Проверяем соединение подключение к СЕТИ
 			   if (NetworkUtil.isNetworkConnected(context)) {
-				  Log.d("UpdateDataService", "есть подключение к сети");
 				  serviceRun = true;
 				  status.setText(R.string.connecting);
 				  myService = new Intent(context, UpdateDataService.class);
 				  context.startService(myService);
-			   } else Log.d("UpdateDataService", "нет подключения к сети");
+			   }
 			}
 	  }
    }
@@ -182,8 +224,11 @@ public class ListActivity extends AppCompatActivity {
 			unregisterReceiver(networkChangeReceiver);
 			networkChangeReceiver = null;
 			editor.putBoolean(APP_PREFERENCES_LOADED_DATA, true);
-			crossFade();
+			// определяем экран
 			initScreen();
+			// анимация закрытия окна загрузки и открытия главного экрана
+			fadeViewIn(contentView);
+			fadeViewOut(loadingView);
 		 } else {
 			Toast.makeText(ListActivity.this, getString(R.string.error_with_db), Toast.LENGTH_SHORT).show();
 			editor.putBoolean(APP_PREFERENCES_LOADED_DATA, false);

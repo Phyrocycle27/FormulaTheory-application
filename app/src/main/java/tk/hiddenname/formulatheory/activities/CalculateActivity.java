@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-
 import es.dmoral.toasty.Toasty;
 import tk.hiddenname.formulatheory.R;
 import tk.hiddenname.formulatheory.activities.main.ListActivity;
@@ -35,43 +34,62 @@ import tk.hiddenname.formulatheory.objects.Unit;
 public class CalculateActivity extends AppCompatActivity {
 
    private Formula formula;
-   private Map<String, Double> enteredValues = new HashMap<>(), selectedUnits = new HashMap<>();
-   private List<View> addedViews = new ArrayList<>();
-   private ArrayList<Unit> list = new ArrayList<>();
+   private Map<String, Double> enteredValues, selectedUnits;
+   private List<View> addedViews;
+   private ArrayList<Unit> list;
+
+   private ListView listView;
 
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
 	  super.onCreate(savedInstanceState);
 	  setContentView(R.layout.activity_calculate);
 	  setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-	  ListView listView = findViewById(R.id.listview);
+
+	  list = new ArrayList<>();
+	  addedViews = new ArrayList<>();
+	  enteredValues = new HashMap<>();
+	  selectedUnits = new HashMap<>();
+
+	  listView = findViewById(R.id.listview);
+	  LinearLayout linear = findViewById(R.id.linear);
 
 	  //Получаем формулу через Intent
 	  formula = getIntent().getParcelableExtra("formula");
-	  ArrayAdapter<String> adapter =
-			  new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, formula.getFormulas());
-	  listView.setAdapter(adapter);
 
-	  final LinearLayout linear = findViewById(R.id.linear);
+	  setListViewAdapter();
+
 	  for (int i = 0; i < formula.getComponents().length; i++) {
 		 String component = formula.getComponentByIndex(i);
 		 linear.addView(addField(component, i));
 	  }
+
 	  Log.d("Calculate", "(onCreate) HashMap \"values\" is: " + enteredValues.toString());
+   }
+
+   private void setListViewAdapter() {
+	  int itemPatternResId = android.R.layout.simple_list_item_1;
+	  ArrayAdapter<String> adapter =
+			  new ArrayAdapter<>(this, itemPatternResId, formula.getFormulas());
+	  listView.setAdapter(adapter);
    }
 
    @SuppressLint("SetTextI18n")
    private View addField(final String component, final int i) {
 	  @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.calculate_field, null);
-	  list.add(ListActivity.getDataThread().getUnitByLetter(component));
+	  //Определяем View элементы
 	  TextView letter = view.findViewById(R.id.component_name);
 	  EditText valueField = view.findViewById(R.id.value_field);
 	  Spinner spinner = view.findViewById(R.id.units_spinner);
+	  //Добавляем единицы измерния
+	  list.add(ListActivity.getDataThread().getUnitByLetter(component));
+	  final String[] units = list.get(i).getMap().keySet().toArray(new String[0]);
+	  // Устанавливаем слушатель на выбор единицы измерения
 	  spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 		 @Override
 		 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		    String[] strings = list.get(i).getMap().keySet().toArray(new String[0]);
-			selectedUnits.put(component, Objects.requireNonNull(list.get(i).getMap().get(strings[position])));
+			selectedUnits.put(component, Objects.requireNonNull(list.get(i).getMap().get(units[position])));
+			// были внесены изменения
 			Log.d("Calculate", "(addField) HashMap \"units\" is: " + selectedUnits.toString());
 		 }
 
@@ -82,7 +100,7 @@ public class CalculateActivity extends AppCompatActivity {
 	  });
 	  try {
 		 ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-				 android.R.layout.simple_spinner_item, list.get(i).getMap().keySet().toArray(new String[0]));
+				 android.R.layout.simple_spinner_item, units);
 		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		 spinner.setAdapter(adapter);
 		 valueField.setHint(list.get(i).getHint());
@@ -99,11 +117,6 @@ public class CalculateActivity extends AppCompatActivity {
    @Override
    protected void onDestroy() {
 	  super.onDestroy();
-	  formula = null;
-	  enteredValues = null;
-	  selectedUnits = null;
-	  addedViews = null;
-	  list = null;
    }
 
    @Override
@@ -119,7 +132,7 @@ public class CalculateActivity extends AppCompatActivity {
 			imm.hideSoftInputFromWindow(btn.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 			//**************************************************************************************
 			View unknown = new View(getApplicationContext());
-			//Передаём введённые значения в
+			//Получаем введённые значения
 			byte count = 0;
 			for (int i = 0; i < addedViews.size(); i++) {
 			   String str = ((EditText) addedViews.get(i).findViewById(R.id.value_field)).getText().toString();

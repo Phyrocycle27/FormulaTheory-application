@@ -12,15 +12,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import tk.hiddenname.formulatheory.objects.Formula;
 import tk.hiddenname.formulatheory.objects.Section;
 import tk.hiddenname.formulatheory.objects.Subject;
-import tk.hiddenname.formulatheory.objects.Unit;
 
 class HttpClient {
 
+   static final String BASE_URL = "formula-theory-server.herokuapp.com";
    private ServerAPI serverAPI;
 
    HttpClient() {
 	  serverAPI = new Retrofit.Builder()
-						  .baseUrl("https://formula-theory-server.herokuapp.com")
+						  .baseUrl("https://" + BASE_URL)
 						  .addConverterFactory(GsonConverterFactory.create())
 						  .build()
 						  .create(ServerAPI.class);

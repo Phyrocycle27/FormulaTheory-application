@@ -33,12 +33,6 @@ public class Unit {
    public Unit() {
    }
 
-   public Unit(String letter, String hint, Map<String, Double> map) {
-      this.letter = letter;
-      this.hint = hint;
-	  this.map = sortByValues(map);
-   }
-
    public String getHint() {
 	  return hint;
    }

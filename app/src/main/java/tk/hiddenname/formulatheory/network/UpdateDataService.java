@@ -11,6 +11,7 @@ import android.util.Log;
 import java.util.List;
 import java.util.Map;
 
+import tk.hiddenname.formulatheory.R;
 import tk.hiddenname.formulatheory.database.DBConstants;
 import tk.hiddenname.formulatheory.database.DBHelper;
 import tk.hiddenname.formulatheory.objects.Formula;
@@ -97,22 +98,22 @@ public class UpdateDataService extends IntentService {
 		 }
 		 // Единицы измерения
 		 List<Unit> units = new JsonParser().getUnits(httpClient.getUnitsJSON());
-		 if(units != null) {
-		    int unitId = 0;
-		    for (Unit unit: units) {
-		       cv.clear();
-		       cv.put(DBConstants.UnitObjectEntity._ID, unit.getId());
-		       cv.put(DBConstants.UnitObjectEntity.COLUMN_LETTER, unit.getLetter());
-		       cv.put(DBConstants.UnitObjectEntity.COLUMN_HINT, unit.getHint());
-		       db.insert(DBConstants.UnitObjectEntity.TABLE_NAME, null, cv);
-		       for (Map.Entry entry: unit.getMap().entrySet()) {
-		          cv.clear();
-		          cv.put(DBConstants.UnitEntity._ID, unitId);
-		          cv.put(DBConstants.UnitEntity.COLUMN_UNIT_NAME, entry.getKey().toString());
-		          cv.put(DBConstants.UnitEntity.COLUMN_UNIT_COEFF, (Double) entry.getValue());
-		          cv.put(DBConstants.UnitEntity.COLUMN_UNIT_OBJECT_ID, unit.getId());
-		          db.insert(DBConstants.UnitEntity.TABLE_NAME, null, cv);
-		          unitId++;
+		 if (units != null) {
+			int unitId = 0;
+			for (Unit unit : units) {
+			   cv.clear();
+			   cv.put(DBConstants.UnitObjectEntity._ID, unit.getId());
+			   cv.put(DBConstants.UnitObjectEntity.COLUMN_LETTER, unit.getLetter());
+			   cv.put(DBConstants.UnitObjectEntity.COLUMN_HINT, unit.getHint());
+			   db.insert(DBConstants.UnitObjectEntity.TABLE_NAME, null, cv);
+			   for (Map.Entry entry : unit.getMap().entrySet()) {
+				  cv.clear();
+				  cv.put(DBConstants.UnitEntity._ID, unitId);
+				  cv.put(DBConstants.UnitEntity.COLUMN_UNIT_NAME, entry.getKey().toString());
+				  cv.put(DBConstants.UnitEntity.COLUMN_UNIT_COEFF, (Double) entry.getValue());
+				  cv.put(DBConstants.UnitEntity.COLUMN_UNIT_OBJECT_ID, unit.getId());
+				  db.insert(DBConstants.UnitEntity.TABLE_NAME, null, cv);
+				  unitId++;
 			   }
 			}
 		 }
@@ -122,20 +123,22 @@ public class UpdateDataService extends IntentService {
 	  return dbStatus;
    }
 
-   private void finish(boolean dbStatus) {
-	  Log.d(TAG, "finish");
-	  Intent responseIntent = new Intent();
-	  responseIntent.setAction(ACTION);
-	  responseIntent.addCategory(Intent.CATEGORY_DEFAULT);
-	  responseIntent.putExtra(DATABASE_STATUS_KEY, dbStatus);
-	  sendBroadcast(responseIntent);
-   }
-
    @Override
    protected void onHandleIntent(Intent intent) {
 	  Log.d(TAG, "onHandleIntent");
-	  boolean dbStatus = addDataToDB();
-	  finish(dbStatus);
+	  if(NetworkUtil.isInternetConnected()) {
+		 sendMessageToMain(getString(R.string.loading));
+		 boolean dbStatus = addDataToDB();
+		 sendMessageToMain(getString(R.string.success_loading));
+		 finish(dbStatus);
+	  } else {
+		 try {
+			sendMessageToMain(getString(R.string.failed_connect_to_server));
+			Thread.sleep(100);
+		 } catch (InterruptedException e) {
+			e.printStackTrace();
+		 }
+	  }
    }
 
    private void sendMessageToMain(String message) {
@@ -144,6 +147,15 @@ public class UpdateDataService extends IntentService {
 	  responseIntent.setAction(ACTION_UPDATE);
 	  responseIntent.addCategory(Intent.CATEGORY_DEFAULT);
 	  responseIntent.putExtra(MESSAGE_KEY, message);
+	  sendBroadcast(responseIntent);
+   }
+
+   private void finish(boolean dbStatus) {
+	  Log.d(TAG, "finish");
+	  Intent responseIntent = new Intent();
+	  responseIntent.setAction(ACTION);
+	  responseIntent.addCategory(Intent.CATEGORY_DEFAULT);
+	  responseIntent.putExtra(DATABASE_STATUS_KEY, dbStatus);
 	  sendBroadcast(responseIntent);
    }
 }

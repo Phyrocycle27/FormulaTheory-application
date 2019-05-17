@@ -3,13 +3,14 @@ package tk.hiddenname.formulatheory.network;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.InetAddress;
 
-public class NetworkUtil{
+public class NetworkUtil {
 
    public static boolean isNetworkConnected(@NotNull Context context) {
 	  ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -21,8 +22,8 @@ public class NetworkUtil{
    static boolean isInternetConnected() {
 	  boolean status = false;
 	  try {
-		 InetAddress address = InetAddress.getByName("google.com");
-
+		 InetAddress address = InetAddress.getByName(HttpClient.BASE_URL);
+		 Log.d("UpdateDataService", "inetaddr is:" + address.toString());
 		 if (address != null) status = true;
 	  } catch (IOException e) {
 		 e.printStackTrace();

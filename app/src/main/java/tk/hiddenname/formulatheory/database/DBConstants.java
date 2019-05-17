@@ -100,7 +100,7 @@ public class DBConstants {
 	  public static final String COLUMN_UNIT_COEFF = "coeff";
 	  public static final String COLUMN_UNIT_OBJECT_ID = "unit_object_id";
 	  static final String[] SELECTED_COLUMNS = new String[]{
-	  		COLUMN_UNIT_COEFF, COLUMN_UNIT_NAME, COLUMN_UNIT_OBJECT_ID
+			  COLUMN_UNIT_COEFF, COLUMN_UNIT_NAME, COLUMN_UNIT_OBJECT_ID
 	  };
 	  static final String CREATE_TABLE =
 			  "CREATE TABLE IF NOT EXISTS " +
