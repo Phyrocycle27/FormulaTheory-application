@@ -60,7 +60,7 @@ public class UpdateDataService extends IntentService {
 			   db.insert(DBConstants.SubjectEntity.TABLE_NAME, null, cv);
 			   // Загружаем раззделы с сервера, проверяем на пустоту ответ и добавляем в БД
 			   List<Section> sections = httpClient.getSections(subject.getId());
-			   if (subject != null)
+			   if (sections != null)
 				  for (Section section : sections) {
 					 cv.clear();
 					 cv.put(DBConstants.SectionEntity.COLUMN_NAME, section.getName());
@@ -69,7 +69,7 @@ public class UpdateDataService extends IntentService {
 					 // Загружаем объекты формул с сервера, проверяем на пустоту ответ и добавляем в БД
 					 int numOfFormulas = 0;
 					 List<Formula> formulas = httpClient.getFormulas(section.getId());
-					 if (sections != null) {
+					 if (formulas != null) {
 						ContentValues formulaCv = new ContentValues();
 						for (Formula formula : formulas) {
 						   formulaCv.clear();

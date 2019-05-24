@@ -15,24 +15,26 @@ class JsonParser {
 
    List<Unit> getUnits(String response) {
 	  try {
-		 JSONArray array = new JSONArray(response);
-		 List<Unit> units = new ArrayList<>();
-		 for (int i = 0; i < array.length(); i++) {
-			JSONObject unitObj = array.getJSONObject(i);
-			Unit unit = new Unit();
-			unit.setId(unitObj.getInt("id"));
-			unit.setLetter(unitObj.getString("letter"));
-			unit.setHint(unitObj.getString("hint"));
-			JSONArray unitsArr = unitObj.getJSONArray("units");
-			Map<String, Double> unitsMap = new HashMap<>();
-			for (int a = 0; a < unitsArr.length(); a++) {
-			   JSONObject obj = unitsArr.getJSONObject(a);
-			   unitsMap.put(obj.getString("name"), obj.getDouble("coeff"));
+	     if(response != null) {
+			JSONArray array = new JSONArray(response);
+			List<Unit> units = new ArrayList<>();
+			for (int i = 0; i < array.length(); i++) {
+			   JSONObject unitObj = array.getJSONObject(i);
+			   Unit unit = new Unit();
+			   unit.setId(unitObj.getInt("id"));
+			   unit.setLetter(unitObj.getString("letter"));
+			   unit.setHint(unitObj.getString("hint"));
+			   JSONArray unitsArr = unitObj.getJSONArray("units");
+			   Map<String, Double> unitsMap = new HashMap<>();
+			   for (int a = 0; a < unitsArr.length(); a++) {
+				  JSONObject obj = unitsArr.getJSONObject(a);
+				  unitsMap.put(obj.getString("name"), obj.getDouble("coeff"));
+			   }
+			   unit.setMap(unitsMap);
+			   units.add(unit);
 			}
-			unit.setMap(unitsMap);
-			units.add(unit);
+			return units;
 		 }
-		 return units;
 	  } catch (JSONException e) {
 		 e.printStackTrace();
 	  }

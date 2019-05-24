@@ -49,6 +49,7 @@ public class ListActivity extends AppCompatActivity {
    private List<Bitmap> bitmaps;
    private static Intent myService;
    private static boolean serviceRun = false;
+   private static boolean activity = false;
    private int shortAnimationDuration;
    public static final String APP_PREFERENCES = "mySettings",
 		   APP_PREFERENCES_LOADED_DATA = "LoadedDataFlag";
@@ -72,6 +73,7 @@ public class ListActivity extends AppCompatActivity {
 	  bitmaps = new ArrayList<>();
 	  createImageArr();
 	  mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+	  activity = true;
 
 	  image = findViewById(R.id.backdrop);
 	  status = findViewById(R.id.status);
@@ -195,13 +197,14 @@ public class ListActivity extends AppCompatActivity {
 	  if (dataReceiver != null) unregisterReceiver(dataReceiver);
 	  if (updateReceiver != null) unregisterReceiver(updateReceiver);
 	  if (networkChangeReceiver != null) unregisterReceiver(networkChangeReceiver);
+	  activity = false;
    }
 
    public static class NetworkChangeReceiver extends BroadcastReceiver {
 
 	  @Override
 	  public void onReceive(final Context context, final Intent intent) {
-		 if (!serviceRun)
+		 if (!serviceRun && activity)
 			if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
 			   // Проверяем соединение подключение к СЕТИ
 			   if (NetworkUtil.isNetworkConnected(context)) {
